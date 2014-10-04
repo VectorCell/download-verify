@@ -18,3 +18,5 @@ The md5 file should be the result of a md5sum call on the file, in the directory
 And each file should be accessable in the same directory as the md5 file.
 
 WARNING ABOUT download-scp: Using this method without having ssh keys properly set up will cause you to have to enter your password for each file download, ruining the "hands-off" intention of this script.
+
+Usage of the more trivial features of this script may require inclusion of the program "toilet".
