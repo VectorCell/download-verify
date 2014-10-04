@@ -1,0 +1,64 @@
+#!/bin/bash
+
+checksumurl=$1
+checksumfile=$(echo $checksumurl | tr '/' ' ' | rev | awk '{print $1}' | rev)
+baseurl=$(echo $checksumurl | rev | colrm 1 $(expr length $checksumfile) | rev)
+
+while : ; do
+
+	badfiles=0
+
+	# download checksum from server
+	if [ ! -f $checksumfile ]; then
+		wget $checksumurl
+	fi
+	rm -f $checksumfile-verify
+
+	# download files and calculate checksums
+	current=0
+	numfiles=$(wc -l $checksumfile | awk '{print $1}')
+	for file in $(cat $checksumfile | awk '{print $2}'); do
+		((current=current+1))
+		if [ ! -f $file ]; then
+			clear
+			if [ -n "$(which toilet)" ]; then
+				toilet "$current / $numfiles"
+			fi
+			echo "Downloading file $file of $numfiles ... "
+			wget $baseurl$file
+		fi
+		if [ ! -f $file.md5 ]; then
+			clear
+			if [ -n "$(which toilet)" ]; then
+				toilet "$current / $numfiles"
+			fi
+			echo "Calculating md5 checksum for $file ... "
+			md5sum $file >> $file.md5
+		fi
+		cat $file.md5 >> $checksumfile-verify
+	done
+
+	# verify checksums
+	clear
+	if [ -n "$(diff $checksumfile $checksumfile-verify)" ]; then
+		diff $checksumfile $checksumfile-verify
+		echo "file integrity compromised!"
+		for line in $(diff $checksumfile $checksumfile-verify | awk '{print $3}'); do
+			if [ -n "$(echo $line | colrm 1 1)" ]; then
+				rm $line $line.md5
+				((badfiles=badfiles+1))
+			fi
+		done
+		echo "there are $badfiles bad files"
+		echo "attemping to correct ... "
+	else
+		echo "file integrity verified"
+		for file in $(cat $checksumfile | awk '{print $2}'); do
+			rm $file.md5
+		done
+		rm $checksumfile
+		rm $checksumfile-verify
+	fi
+
+	[[ "$badfiles" -gt "0" ]] || break
+done
