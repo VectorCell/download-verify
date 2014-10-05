@@ -26,7 +26,7 @@ This can be generated easily on all files in a directory like this:
 
 	for file in $(ls); do md5sum $file; done
 
-WARNING ABOUT download-scp: Using this method without having ssh keys properly set up will cause you to have to enter your password for each file download, ruining the "hands-off" intention of this script.
+WARNING about using download-scp: Using this method without having ssh keys properly set up will cause you to have to enter your password for each file download, ruining the "hands-off" intention of this script.
 
 Usage of the more trivial features of this script may require inclusion of the program <a href="http://caca.zoy.org/wiki/toilet">toilet</a>.
 
