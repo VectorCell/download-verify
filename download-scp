@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ ! -n "$1" ]; then
+	echo "Must give file location (on remote machine) as argument"
+	echo "This file location follows the same format as in scp."
+	exit 0
+fi
+
 checksumurl=$1
 checksumfile=$(echo $checksumurl | tr '/' ' ' | rev | awk '{print $1}' | rev)
 baseurl=$(echo $checksumurl | rev | colrm 1 $(expr length $checksumfile) | rev)
