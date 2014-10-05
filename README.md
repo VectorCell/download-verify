@@ -15,7 +15,16 @@ The md5 file should be the result of a md5sum call on the file, in the directory
 
 	<md5 hash> <filename>
 
-And each file should be accessable in the same directory as the md5 file.
+And each file should be accessable in the same directory as the md5 file. Here is an example of a valid md5 file:
+
+	cdd9be3c147911a15b63229b02d2031d  file1.txt
+	5f6d8a11ed64cbbecc4864e20a0f3e60  file2.mp4
+	1cbbd5b9f871ea0041caa699e3f4edc1  file3.pdf
+	cdd543cf35a0408746226bfd2579c2e6  file4.7z
+
+This can be generated easily on all files in a directory like this:
+
+	for file in $(ls); do md5sum $file; done
 
 WARNING ABOUT download-scp: Using this method without having ssh keys properly set up will cause you to have to enter your password for each file download, ruining the "hands-off" intention of this script.
 
