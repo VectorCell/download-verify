@@ -22,9 +22,9 @@ And each file should be accessable in the same directory as the md5 file. Here i
 	1cbbd5b9f871ea0041caa699e3f4edc1  file3.pdf
 	cdd543cf35a0408746226bfd2579c2e6  file4.7z
 
-This can be generated easily on all files in a directory like this:
+This can be generated easily on all files in a directory like this, where "sums.md5 can be replaced by whatever you want to call the md5 sum file:
 
-	for file in $(ls); do md5sum $file; done
+	for file in $(ls); do md5sum $file >> sums.md5; done
 
 WARNING about using download-scp: Using this method without having ssh keys properly set up will cause you to have to enter your password for each file download, ruining the "hands-off" intention of this script.
 
