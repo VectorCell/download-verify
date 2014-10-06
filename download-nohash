@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# This is not really intended to be an official part of the download-verify set of scripts,
+# and should only be used in isolated cases when it's needed (you'll know if you need it).
+
+# Usage: download-nohash <base-url> <base-filename> <number of archives>
+#
+# Example:
+# 	download-nohash http://127.0.0.1/archive/ file.7z 3
+# gets the following files:
+# 	file.7z.001
+# 	file.7z.002
+# 	file.7z.003
+
+baseurl=$1
+archive=$2
+numfiles=$3
+
+rm -f $archive.md5
+
+for ext in $(seq -f "%03g" 1 $numfiles); do
+        if [ ! -f $archive.$ext ]; then
+                clear
+                echo "Downloading $baseurl$archive.$ext (out of $numfiles files) ... "
+                wget $baseurl$archive.$ext
+        fi
+        echo "Calculating md5 checksum for $archive.$ext ... "
+        md5sum $archive.$ext >> $archive.md5
+done
+
