@@ -2,7 +2,20 @@
 
 if [ ! -n "$1" ]; then
 	echo "Must include url as argument"
+	echo "Usage: download <url>"
+	echo "       download <url> <user> <password>"
 	exit 0
+fi
+
+haspw="false"
+if [ -n "$2" ]; then
+	if [ -n "$3" ]; then
+		haspw="true"
+	else
+		echo "Error: supplied username but no password"
+		echo "Usage: download <url> <user> <password>"
+		exit 0
+	fi
 fi
 
 checksumurl=$1
@@ -15,7 +28,11 @@ while : ; do
 
 	# download checksum from server
 	if [ ! -f $checksumfile ]; then
-		wget $checksumurl
+		if [ $haspw == "true" ]; then
+			wget --user=$2 password=$3 $checksumurl
+		else
+			wget $checksumurl
+		fi
 	fi
 	rm -f $checksumfile-verify
 
@@ -30,7 +47,11 @@ while : ; do
 				toilet "$current / $numfiles"
 			fi
 			echo "Downloading file $file of $numfiles ... "
-			wget $baseurl$file
+			if [ $haspw == "true" ]; then
+				wget --user=$2 password=$3 $baseurl$file
+			else
+				wget $baseurl$file
+			fi
 		fi
 		if [ ! -f $file.md5 ]; then
 			clear
@@ -67,3 +88,4 @@ while : ; do
 
 	[[ "$badfiles" -gt "0" ]] || break
 done
+

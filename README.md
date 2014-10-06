@@ -7,6 +7,10 @@ Usage:
 
 	download <url of md5 file>
 
+or (for password-protected stuff)
+
+	download <url> <user> <password>
+
 or
 
 	download-scp <address:/path/to/md5-file>
