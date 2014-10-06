@@ -29,7 +29,7 @@ while : ; do
 	# download checksum from server
 	if [ ! -f $checksumfile ]; then
 		if [ $haspw == "true" ]; then
-			wget --user=$2 password=$3 $checksumurl
+			wget --user=$2 --password=$3 $checksumurl
 		else
 			wget $checksumurl
 		fi
@@ -48,7 +48,7 @@ while : ; do
 			fi
 			echo "Downloading file $file of $numfiles ... "
 			if [ $haspw == "true" ]; then
-				wget --user=$2 password=$3 $baseurl$file
+				wget --user=$2 --password=$3 $baseurl$file
 			else
 				wget $baseurl$file
 			fi
