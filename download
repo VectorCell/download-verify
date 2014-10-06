@@ -1,24 +1,28 @@
 #!/bin/bash
 
-if [ ! -n "$1" ]; then
+username=""
+password=""
+checksumurl=""
+
+for var in "$@"; do
+	if [ "$(echo $var | tr '=' ' ' | awk '{print $1}')" == "--user" ]; then
+		username="$(echo $var | tr '=' ' ' | awk '{print $2}')"
+	else
+		if [ "$(echo $var | tr '=' ' ' | awk '{print $1}')" == "--password" ]; then
+        	        password="$(echo $var | tr '=' ' ' | awk '{print $2}')"
+		else
+			checksumurl="$var"
+		fi
+	fi
+done
+
+if [ ! -n "$checksumurl" ]; then
 	echo "Must include url as argument"
 	echo "Usage: download <url>"
 	echo "       download <url> <user> <password>"
-	exit 0
+	exit 1
 fi
 
-haspw="false"
-if [ -n "$2" ]; then
-	if [ -n "$3" ]; then
-		haspw="true"
-	else
-		echo "Error: supplied username but no password"
-		echo "Usage: download <url> <user> <password>"
-		exit 0
-	fi
-fi
-
-checksumurl=$1
 checksumfile=$(echo $checksumurl | tr '/' ' ' | rev | awk '{print $1}' | rev)
 baseurl=$(echo $checksumurl | rev | colrm 1 $(expr length $checksumfile) | rev)
 
@@ -28,10 +32,14 @@ while : ; do
 
 	# download checksum from server
 	if [ ! -f $checksumfile ]; then
-		if [ $haspw == "true" ]; then
-			wget --user=$2 --password=$3 $checksumurl
+		if [ -n "$username" ] || [ -n "$password" ]; then
+			wget --user=$username --password=$password $checksumurl
 		else
 			wget $checksumurl
+		fi
+		if [ ! -f $checksumfile ]; then
+			echo "ERROR: could not download checksum file"
+			exit 1
 		fi
 	fi
 	rm -f $checksumfile-verify
@@ -47,8 +55,8 @@ while : ; do
 				toilet "$current / $numfiles"
 			fi
 			echo "Downloading file $file of $numfiles ... "
-			if [ $haspw == "true" ]; then
-				wget --user=$2 --password=$3 $baseurl$file
+			if [ -n "$username" ] || [ -n "$password" ]; then
+				wget --user=$username --password=$password $baseurl$file
 			else
 				wget $baseurl$file
 			fi

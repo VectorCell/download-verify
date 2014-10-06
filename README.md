@@ -1,17 +1,17 @@
 download-verify
 ===============
 
-Quick and dirty script to download a things and verify file integrity.
+Quick and dirty script to download a bunch of things with wget or scp, and verify file integrity.
 
 Usage:
 
 	download <url of md5 file>
 
-or (for password-protected stuff)
+or, for password-protected stuff, use the same argument style that wget uses:
 
-	download <url> <user> <password>
+	download <password>
 
-or
+or, if you want to download files using scp instead of wget
 
 	download-scp <address:/path/to/md5-file>
 
