@@ -21,6 +21,9 @@ rm -f $archive.md5
 for ext in $(seq -f "%03g" 1 $numfiles); do
         if [ ! -f $archive.$ext ]; then
                 clear
+		if [ -n "$(which toilet)" ]; then
+			toilet "$ext / $numfiles"
+		fi
                 echo "Downloading $baseurl$archive.$ext (out of $numfiles files) ... "
                 wget $baseurl$archive.$ext
         fi
