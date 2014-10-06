@@ -30,6 +30,10 @@ This can be generated easily on all files in a directory like this, where "sums.
 
 	for file in $(ls); do md5sum $file >> sums.md5; done
 
+or by using the included "prepare" script, which generates a checksum file for all files in the current directory, like this:
+
+	prepare <filename-to-create>
+
 WARNING about using download-scp: Using this method without having ssh keys properly set up will cause you to have to enter your password for each file download, ruining the "hands-off" intention of this script.
 
 Usage of the more trivial features of this script may require inclusion of the program <a href="http://caca.zoy.org/wiki/toilet">toilet</a>.
