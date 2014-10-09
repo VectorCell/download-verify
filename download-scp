@@ -17,6 +17,10 @@ while : ; do
 	# download checksum from server
 	if [ ! -f $checksumfile ]; then
 		scp $checksumurl ./
+		if [ ! -f $checksumfile ]; then
+			echo "ERROR: could not download checksum file"
+			exit 1
+		fi
 	fi
 	rm -f $checksumfile-verify
 
