@@ -1,0 +1,14 @@
+#!/bin/bash
+
+for dir in $(ls); do
+	if [ -d $dir ]; then
+		cd $dir
+		7za a -mx=0 -v128m $dir.7z *
+		find . -maxdepth 1 ! -path . | grep -v -E "7z|md5" | while read file; do
+			rm -r "$file"
+		done
+		prepare $dir.md5
+		printf "\n"
+		cd ..
+	fi
+done
