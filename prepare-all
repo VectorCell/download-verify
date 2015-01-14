@@ -12,12 +12,6 @@ trap control_c SIGINT
 for dir in $(ls); do
 	if [ -d $dir ]; then
 		cd $dir
-		if [ ! -f checksums.md5 ]; then
-			find -type f | sort | while read file; do
-				echo "Calculating checksum for $file ..."
-				md5sum "$file" >> checksums-$dir.md5
-			done
-		fi
 		7za a -mx=0 -v128m $dir.7z *
 		find ! -name "*.7z.*" -delete
 		prepare $dir.md5
