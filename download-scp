@@ -6,7 +6,19 @@ if [ ! -n "$1" ]; then
 	exit 0
 fi
 
-checksumurl=$1
+rmchecksum="true"
+scpargs=""
+for arg in "$@"; do
+	if [ "$arg" == "--no-rm-checksum" ]; then
+		rmchecksum="false"
+	else
+		scpargs="$scpargs $arg"
+	fi
+done
+
+echo "scpargs: $scpargs"
+
+checksumurl=$scpargs
 checksumfile=$(echo $checksumurl | tr '/' ' ' | rev | awk '{print $1}' | rev)
 baseurl=$(echo $checksumurl | rev | colrm 1 $(expr length $checksumfile) | rev)
 
@@ -66,7 +78,9 @@ while : ; do
 		for file in $(cat $checksumfile | awk '{print $2}'); do
 			rm $file.md5
 		done
-		rm $checksumfile
+		if [ "$rmchecksum" == "true" ]; then
+			rm $checksumfile
+		fi
 		rm $checksumfile-verify
 	fi
 

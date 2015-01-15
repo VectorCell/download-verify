@@ -4,7 +4,12 @@ username=""
 password=""
 checksumurl=""
 
+rmchecksum="true"
+
 for var in "$@"; do
+	if [ "$var" == "--no-rm-checksum" ]; then
+		rmchecksum="false"
+	fi
 	if [ "$(echo $var | tr '=' ' ' | awk '{print $1}')" == "--user" ]; then
 		username="$(echo $var | tr '=' ' ' | awk '{print $2}')"
 	else
@@ -90,7 +95,9 @@ while : ; do
 		for file in $(cat $checksumfile | awk '{print $2}'); do
 			rm $file.md5
 		done
-		rm $checksumfile
+		if [ "$rmchecksum" == "true" ]; then
+			rm $checksumfile
+		fi
 		rm $checksumfile-verify
 	fi
 
