@@ -12,7 +12,7 @@ trap control_c SIGINT
 for dir in $(ls); do
 	if [ -d $dir ]; then
 		cd $dir
-		7za a -mx=0 -v128m $dir.7z *
+		7za a -mx=0 -v256m $dir.7z *
 		find ! -name "*.7z.*" -delete
 		prepare $dir.md5
 		printf "\n"
