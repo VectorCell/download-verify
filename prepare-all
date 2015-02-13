@@ -11,11 +11,15 @@ trap control_c SIGINT
 
 for dir in $(ls); do
 	if [ -d $dir ]; then
-		cd $dir
-		7za a -mx=0 -v256m $dir.7z *
-		find ! -name "*.7z.*" -delete
-		prepare $dir.md5
-		printf "\n"
-		cd ..
+		if [ ! -f $dir/$dir.md5 ]; then
+			cd $dir
+			7za a -mx=0 -v256m $dir.7z *
+			find ! -name "*.7z.*" -delete
+			prepare $dir.md5
+			printf "\n"
+			cd ..
+		else
+			echo "skipping $dir because $dir/$dir.md5 already exists"
+		fi
 	fi
 done
