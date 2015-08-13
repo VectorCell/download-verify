@@ -1,8 +1,13 @@
 #!/bin/bash
 
+hashprogram="xxhsum"
+
 if [ -z "$1" ]; then
-	echo "ERROR: must specify filename of md5 checksum file"
+	echo "ERROR: must specify filename of checksum file"
 	exit 0
+fi
+if [ -n "$2" ]; then
+	hashprogram="$2"
 fi
 
 if [ -f "$1" ]; then
@@ -24,9 +29,8 @@ count=0
 total="$(ls | wc -l | awk '{print $1}')"
 for file in $(ls); do
 	((count=count+1))
-	#echo " $count / $total   $file"
 	printf "%3d / %d   %s\n" $count $total $file
-	md5sum $file >> $1
+	$hashprogram $file >> $1
 done
 
 cat $1

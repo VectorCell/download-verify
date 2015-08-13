@@ -1,5 +1,8 @@
 #!/bin/bash
 
+hashprogram="xxhsum"
+hashextension="xx"
+
 if [ ! -n "$1" ]; then
 	echo "Must give file location (on remote machine) as argument"
 	echo "This file location follows the same format as in scp."
@@ -49,15 +52,15 @@ while : ; do
 			echo "Downloading file $file of $numfiles ... "
 			scp $baseurl$file ./
 		fi
-		if [ ! -f $file.md5 ]; then
+		if [ ! -f $file.$hashextension ]; then
 			clear
 			if [ -n "$(which toilet)" ]; then
 				toilet "$current / $numfiles"
 			fi
-			echo "Calculating md5 checksum for $file ... "
-			md5sum $file >> $file.md5
+			echo "Calculating $hashextension checksum for $file ... "
+			$hashprogram $file >> $file.$hashextension
 		fi
-		cat $file.md5 >> $checksumfile-verify
+		cat $file.$hashextension >> $checksumfile-verify
 	done
 
 	# verify checksums
@@ -67,7 +70,7 @@ while : ; do
 		echo "file integrity compromised!"
 		for line in $(diff $checksumfile $checksumfile-verify | awk '{print $3}'); do
 			if [ -n "$(echo $line | colrm 1 1)" ]; then
-				rm $line $line.md5
+				rm $line $line.$hashextension
 				((badfiles=badfiles+1))
 			fi
 		done
@@ -76,7 +79,7 @@ while : ; do
 	else
 		echo "file integrity verified"
 		for file in $(cat $checksumfile | awk '{print $2}'); do
-			rm $file.md5
+			rm $file.$hashextension
 		done
 		if [ "$rmchecksum" == "true" ]; then
 			rm $checksumfile

@@ -13,7 +13,7 @@ for dir in $(ls); do
 	if [ -d $dir ]; then
 		if [ ! -f $dir/$dir.md5 ]; then
 			cd $dir
-			7za a -mx=0 -v256m $dir.7z * && find ! -name "*.7z.*" -delete && prepare $dir.md5
+			7za a -mx=0 -v256m $dir.7z * && find ! -name "*.7z.*" -delete && prepare $dir.xx xxhsum
 			printf "\n"
 			cd ..
 		else
