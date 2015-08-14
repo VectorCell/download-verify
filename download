@@ -7,7 +7,7 @@ checksumurl=""
 rmchecksum="true"
 
 hashprogram="xxhsum"
-hashextension="xx"
+hashextension="xxh"
 
 for var in "$@"; do
 	if [ "$var" == "--no-rm-checksum" ]; then
