@@ -30,7 +30,11 @@ total="$(ls | wc -l | awk '{print $1}')"
 for file in $(ls); do
 	((count=count+1))
 	printf "%3d / %d   %s\n" $count $total $file
-	$hashprogram $file >> $1
+	if [ -n "$(which pv)" ]; then
+		pv < $file | $hashprogram | sed "s/-/${file}/g" >> $1
+	else
+		$hashprogram $file >> $1
+	fi
 done
 
 cat $1
